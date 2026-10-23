@@ -32,6 +32,7 @@ parts:
       # snapcraft has a lint that this is unused, but without it Zed exits with
       # "NoWaylandLib" when run with Wayland.
       - libwayland-client0
+      - libx11-xcb1
       - libxcb1
       - libxkbcommon-x11-0
       - libxkbcommon0
@@ -57,3 +58,9 @@ apps:
     common-id: dev.zed.Zed
     environment:
       ZED_BUNDLE_TYPE: snap
+      # The ELF interpreter and rpath are pinned to core24, and that older
+      # dynamic loader cannot use the host's ld.so.cache on hosts with a
+      # newer glibc. Libraries that live on the host (EGL, Vulkan ICD
+      # drivers and their dependencies) must therefore be resolvable via
+      # LD_LIBRARY_PATH or window/surface creation fails.
+      LD_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu
